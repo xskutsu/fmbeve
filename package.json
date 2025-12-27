@@ -16,8 +16,9 @@
 	"contributors": [
 		"xskutsu <xsku@protonmail.com>"
 	],
-	"devDependencies": {
+	"dependencies": {
 		"esbuild": "^0.27.2",
+		"express": "^5.2.1",
 		"typescript": "^5.9.3"
 	}
 }
