@@ -9,6 +9,7 @@
 		"build": "node scripts/esbuild.cjs",
 		"check": "tsc -p src/tsconfig.json --noEmit",
 		"clean": "node scripts/clean.cjs",
+		"serve": "node scripts/serve.cjs",
 		"watch": "node scripts/esbuild.cjs --watch"
 	},
 	"author": "SkaraDev63425742",
