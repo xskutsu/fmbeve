@@ -40,9 +40,9 @@ export class Entity {
 		const rx: number = parseFMBEValue(this.fmbe.rotation.x, 0) * DEG_TO_RAD;
 		const ry: number = -parseFMBEValue(this.fmbe.rotation.y, 0) * DEG_TO_RAD;
 		const rz: number = -parseFMBEValue(this.fmbe.rotation.z, 0) * DEG_TO_RAD;
-		const bx: number = parseFMBEValue(this.fmbe.basePosition.x, 0) / 16;
-		const by: number = parseFMBEValue(this.fmbe.basePosition.y, 0) / 16;
-		const bz: number = parseFMBEValue(this.fmbe.basePosition.z, 0) / 16;
+		const bx: number = parseFMBEValue(this.fmbe.basePosition.x, 0);
+		const by: number = parseFMBEValue(this.fmbe.basePosition.y, 0);
+		const bz: number = parseFMBEValue(this.fmbe.basePosition.z, 0);
 		const s: number = parseFMBEValue(this.fmbe.scale, 1);
 		const es: number = parseFMBEValue(this.fmbe.extend.scale, 1);
 		const ex: number = parseFMBEValue(this.fmbe.extend.rotation.x, -90) * DEG_TO_RAD;
@@ -61,7 +61,7 @@ export class Entity {
 		const translationMatrix: Matrix4 = new Matrix4().makeTranslation(px, py, pz);
 		const finalMatrix: Matrix4 = new Matrix4();
 		finalMatrix.multiply(translationMatrix);
-		finalMatrix.multiply(new Matrix4().makeRotationFromEuler(new Euler(rx, ry, rz, "XYZ")));
+		finalMatrix.multiply(new Matrix4().makeRotationFromEuler(new Euler(rx, ry, rz, "YXZ")));
 		finalMatrix.multiply(new Matrix4().makeScale(s, s, s));
 		finalMatrix.multiply(extendMatrix);
 		finalMatrix.multiply(new Matrix4().makeTranslation(bx, by, bz));

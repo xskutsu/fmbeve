@@ -13,9 +13,9 @@ export function getCommand(fmbe: FMBE, selector: string, layerName: string = "wi
 	pushIfNotNull("v.xrot", fmbe.rotation.x);
 	pushIfNotNull("v.yrot", fmbe.rotation.y);
 	pushIfNotNull("v.zrot", fmbe.rotation.z);
-	pushIfNotNull("v.baseposx", fmbe.basePosition.x);
-	pushIfNotNull("v.baseposy", fmbe.basePosition.y);
-	pushIfNotNull("v.baseposz", fmbe.basePosition.z);
+	pushIfNotNull("v.xbasepos", fmbe.basePosition.x);
+	pushIfNotNull("v.ybasepos", fmbe.basePosition.y);
+	pushIfNotNull("v.zbasepos", fmbe.basePosition.z);
 	pushIfNotNull("v.scale", fmbe.scale);
 	pushIfNotNull("v.extend_scale", fmbe.extend.scale);
 	pushIfNotNull("v.extend_xrot", fmbe.extend.rotation.x);
