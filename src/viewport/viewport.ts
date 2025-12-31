@@ -11,14 +11,14 @@ scene.background = new Color(0x222222);
 
 export const camera: PerspectiveCamera = new PerspectiveCamera(60, innerWidth / innerHeight, 0.1, 2000);
 
-export const orbit: OrbitCameraControl = new OrbitCameraControl(camera, 0.005, 0.0075);
-orbit.setupInput(renderer.domElement);
-
 window.addEventListener("resize", function (): void {
 	camera.aspect = innerWidth / innerHeight;
 	camera.updateProjectionMatrix();
 	renderer.setSize(innerWidth, innerHeight);
 }, false);
+
+export const orbit: OrbitCameraControl = new OrbitCameraControl(camera, 0.005, 0.0075);
+orbit.setupInput(renderer.domElement);
 
 scene.add(new AmbientLight(0xffffff, 0.6));
 
