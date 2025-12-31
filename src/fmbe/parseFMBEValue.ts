@@ -7,7 +7,9 @@ export function parseFMBEValue(value: FMBEValue, defaultValue: number): number {
 		return defaultValue;
 	}
 	if (typeof value === "string") {
-		const result: MolangExec = Molang.execute(value);
+		const result: MolangExec = Molang.execute(value, new Map([
+			["q.life_time", () => performance.now() / 1000]
+		]));
 		if (result.success) {
 			return result.value;
 		} else {
