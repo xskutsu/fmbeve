@@ -1,5 +1,4 @@
-import { AmbientLight, AxesHelper, Color, DirectionalLight, GridHelper, PerspectiveCamera, PMREMGenerator, Scene, WebGLRenderer } from "three";
-import { RoomEnvironment } from "three/examples/jsm/Addons.js";
+import { AmbientLight, AxesHelper, Color, DirectionalLight, GridHelper, PerspectiveCamera, Scene, WebGLRenderer } from "three";
 import OrbitCameraControl from "./OrbitCameraControl";
 
 export const renderer: WebGLRenderer = new WebGLRenderer({ antialias: true });
@@ -23,20 +22,9 @@ window.addEventListener("resize", function (): void {
 
 scene.add(new AmbientLight(0xffffff, 0.6));
 
-const pmremGenerator = new PMREMGenerator(renderer);
-pmremGenerator.compileEquirectangularShader();
-
-const roomEnvironment = new RoomEnvironment();
-
-scene.environment = pmremGenerator.fromScene(roomEnvironment, 1).texture;
-
-const directionLight = new DirectionalLight(0xffffff, 0.8);
-directionLight.position.set(5, 10, 7);
-scene.add(directionLight);
-
-const backLight = new DirectionalLight(0xffffff, 1);
-backLight.position.set(-5, -5, -5);
-scene.add(backLight);
+const directionalLight: DirectionalLight = new DirectionalLight(0xffffff, 0.7);
+directionalLight.position.set(10, 20, 15);
+scene.add(directionalLight);
 
 const gridHelper1 = new GridHelper(3, 3, 0x444444, 0x444444);
 gridHelper1.position.y -= 0.5;

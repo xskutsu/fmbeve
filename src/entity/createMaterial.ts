@@ -1,4 +1,4 @@
-import { Color, Material, MeshStandardMaterial, NearestFilter, SRGBColorSpace, Texture } from "three";
+import { Material, MeshStandardMaterial, NearestFilter, SRGBColorSpace, Texture } from "three";
 import { EntityTexture } from "./types";
 
 export function createEntityMaterial(et: EntityTexture): Material[] {
@@ -10,10 +10,9 @@ export function createEntityMaterial(et: EntityTexture): Material[] {
 		texture.colorSpace = SRGBColorSpace;
 		materials.push(new MeshStandardMaterial({
 			map: texture,
-			color: new Color(0xFFFFFF),
-			roughness: 0.1,
-			metalness: 1,
-			envMapIntensity: 0.9
+			color: 0xffffff,
+			roughness: 1,
+			metalness: 0
 		}));
 	}
 	return materials;
