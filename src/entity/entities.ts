@@ -1,4 +1,4 @@
-import { BoxGeometry, Euler, Matrix4, Mesh } from "three";
+import { BoxGeometry, Mesh } from "three";
 import { DEG_TO_RAD } from "../constants";
 import { parseFMBEValue } from "../fmbe/parseFMBEValue";
 import { FMBE } from "../fmbe/types";
@@ -47,25 +47,90 @@ export class Entity {
 		const es: number = parseFMBEValue(this.fmbe.extend.scale, 1);
 		const ex: number = parseFMBEValue(this.fmbe.extend.rotation.x, -90) * DEG_TO_RAD;
 		const ey: number = -parseFMBEValue(this.fmbe.extend.rotation.y, 0) * DEG_TO_RAD;
-		const matShear: Matrix4 = new Matrix4();
-		const rxMatrix: Matrix4 = new Matrix4().makeRotationX(ex);
-		const ryMatrix: Matrix4 = new Matrix4().makeRotationY(ey);
-		matShear.multiply(ryMatrix);
-		matShear.multiply(rxMatrix);
-		matShear.multiply(new Matrix4().makeScale(1, 1, es));
-		matShear.multiply(rxMatrix.transpose());
-		matShear.multiply(ryMatrix.transpose());
-		const extendMatrix: Matrix4 = new Matrix4();
-		extendMatrix.multiply(matShear);
-		extendMatrix.multiply(new Matrix4().makeScale(1, es, 1));
-		const translationMatrix: Matrix4 = new Matrix4().makeTranslation(px, py, pz);
-		const finalMatrix: Matrix4 = new Matrix4();
-		finalMatrix.multiply(translationMatrix);
-		finalMatrix.multiply(new Matrix4().makeRotationFromEuler(new Euler(rx, ry, rz, "YXZ")));
-		finalMatrix.multiply(new Matrix4().makeScale(s, s, s));
-		finalMatrix.multiply(extendMatrix);
-		finalMatrix.multiply(new Matrix4().makeTranslation(bx, by, bz));
-		this.mesh.matrix.copy(finalMatrix);
+
+		// cache trig for the extend rotation
+		const cEx: number = Math.cos(ex);
+		const sEx: number = Math.sin(ex);
+		const cEy: number = Math.cos(ey);
+		const sEy: number = Math.sin(ey);
+
+		// direction vector w (Z-axis of Ry(ey) * Rx(ex))
+		// this defines the direction of the extend aka shear
+		const wx: number = sEy * cEx;
+		const wy: number = -sEx;
+		const wz: number = cEy * cEx;
+
+		// shear matrix elements (3x3)
+		// M_shear = I + (es - 1) * w * w^T
+		const k: number = es - 1;
+		const m00: number = 1 + k * wx * wx;
+		const m01: number = k * wx * wy;
+		const m02: number = k * wx * wz;
+		const m11: number = 1 + k * wy * wy;
+		const m12: number = k * wy * wz;
+		const m22: number = 1 + k * wz * wz;
+
+		// compute M_ext columns by applying the non-uniform scale S(1, es, 1)
+		// column 0 (unscaled)
+		const e00: number = m00;
+		const e10: number = m01;
+		const e20: number = m02;
+		// column 1 (scaled by es)
+		const e01: number = m01 * es;
+		const e11: number = m11 * es;
+		const e21: number = m12 * es;
+		// column 2 (unscaled)
+		const e02: number = m02;
+		const e12: number = m12;
+		const e22: number = m22;
+
+		// main rotation R (YXZ) with scale s
+		const c1: number = Math.cos(rx);
+		const s1: number = Math.sin(rx);
+		const c2: number = Math.cos(ry);
+		const s2: number = Math.sin(ry);
+		const c3: number = Math.cos(rz);
+		const s3: number = Math.sin(rz);
+
+		// elements of R * s
+		const r00: number = (c2 * c3 + s2 * s1 * s3) * s;
+		const r01: number = (s2 * s1 * c3 - c2 * s3) * s;
+		const r02: number = (s2 * c1) * s;
+
+		const r10: number = (c1 * s3) * s;
+		const r11: number = (c1 * c3) * s;
+		const r12: number = (-s1) * s;
+
+		const r20: number = (c2 * s1 * s3 - s2 * c3) * s;
+		const r21: number = (c2 * s1 * c3 + s2 * s3) * s;
+		const r22: number = (c2 * c1) * s;
+
+		// final 3x3 rotation
+		// M_final = (R * s) * M_ext
+		const f00: number = r00 * e00 + r01 * e10 + r02 * e20;
+		const f01: number = r00 * e01 + r01 * e11 + r02 * e21;
+		const f02: number = r00 * e02 + r01 * e12 + r02 * e22;
+
+		const f10: number = r10 * e00 + r11 * e10 + r12 * e20;
+		const f11: number = r10 * e01 + r11 * e11 + r12 * e21;
+		const f12: number = r10 * e02 + r11 * e12 + r12 * e22;
+
+		const f20: number = r20 * e00 + r21 * e10 + r22 * e20;
+		const f21: number = r20 * e01 + r21 * e11 + r22 * e21;
+		const f22: number = r20 * e02 + r21 * e12 + r22 * e22;
+
+		// final Translation
+		// T_final = (M_final_3x3 * BasePos) + Position
+		const tx: number = f00 * bx + f01 * by + f02 * bz + px;
+		const ty: number = f10 * bx + f11 * by + f12 * bz + py;
+		const tz: number = f20 * bx + f21 * by + f22 * bz + pz;
+
+		this.mesh.matrix.set(
+			f00, f01, f02, tx,
+			f10, f11, f12, ty,
+			f20, f21, f22, tz,
+			0, 0, 0, 1
+		);
 		this.mesh.updateMatrixWorld(true);
 	}
 }
