@@ -1,7 +1,7 @@
-import { Mesh } from "three";
+import type { Mesh } from "three";
 import { DEG_TO_RAD } from "../constants";
 import { parseFMBEValue } from "../fmbe/parseFMBEValue";
-import { FMBE } from "../fmbe/types";
+import type { FMBE } from "../fmbe/types";
 import { scene } from "../viewport/viewport";
 
 export const entities: Map<string, Entity> = new Map<string, Entity>();
@@ -20,7 +20,7 @@ export class Entity {
 	public remove(): void {
 		scene.remove(this.mesh);
 		entities.delete(this.mesh.uuid);
-		if (this.mesh.material instanceof Array) {
+		if (Array.isArray(this.mesh.material)) {
 			for (const material of this.mesh.material) {
 				material.dispose();
 			}
@@ -68,7 +68,7 @@ export class Entity {
 
 		// secondary Y-scale multiplier.
 		// only blocks apply es again on the y axis.
-		const scaleY: number = (this.mesh.geometry.type === "BoxGeometry") ? es : 1;
+		const scaleY: number = this.mesh.geometry.type === "BoxGeometry" ? es : 1;
 
 		// compute M_ext columns by applying the non-uniform scale S(1, scaleY, 1)
 		// column 0 (unscaled)
@@ -95,15 +95,15 @@ export class Entity {
 		// elements of R * s
 		const r00: number = (c2 * c3 + s2 * s1 * s3) * s;
 		const r01: number = (s2 * s1 * c3 - c2 * s3) * s;
-		const r02: number = (s2 * c1) * s;
+		const r02: number = s2 * c1 * s;
 
-		const r10: number = (c1 * s3) * s;
-		const r11: number = (c1 * c3) * s;
-		const r12: number = (-s1) * s;
+		const r10: number = c1 * s3 * s;
+		const r11: number = c1 * c3 * s;
+		const r12: number = -s1 * s;
 
 		const r20: number = (c2 * s1 * s3 - s2 * c3) * s;
 		const r21: number = (c2 * s1 * c3 + s2 * s3) * s;
-		const r22: number = (c2 * c1) * s;
+		const r22: number = c2 * c1 * s;
 
 		// final 3x3 rotation
 		// M_final = (R * s) * M_ext
@@ -126,10 +126,22 @@ export class Entity {
 		const tz: number = f20 * bx + f21 * by + f22 * bz + pz;
 
 		this.mesh.matrix.set(
-			f00, f01, f02, tx,
-			f10, f11, f12, ty,
-			f20, f21, f22, tz,
-			0, 0, 0, 1
+			f00,
+			f01,
+			f02,
+			tx,
+			f10,
+			f11,
+			f12,
+			ty,
+			f20,
+			f21,
+			f22,
+			tz,
+			0,
+			0,
+			0,
+			1
 		);
 		this.mesh.updateMatrixWorld(true);
 	}

@@ -1,4 +1,12 @@
-import { AxesHelper, Color, GridHelper, PerspectiveCamera, Scene, SRGBColorSpace, WebGLRenderer } from "three";
+import {
+	AxesHelper,
+	Color,
+	GridHelper,
+	PerspectiveCamera,
+	Scene,
+	SRGBColorSpace,
+	WebGLRenderer,
+} from "three";
 import { entities } from "../entity/entities";
 import OrbitCameraControl from "./OrbitCameraControl";
 
@@ -12,15 +20,29 @@ document.body.appendChild(renderer.domElement);
 export const scene: Scene = new Scene();
 scene.background = new Color(0x111115);
 
-const camera: PerspectiveCamera = new PerspectiveCamera(60, innerWidth / innerHeight, 0.1, 100);
+const camera: PerspectiveCamera = new PerspectiveCamera(
+	60,
+	innerWidth / innerHeight,
+	0.1,
+	100,
+);
 
-window.addEventListener("resize", function (): void {
-	camera.aspect = innerWidth / innerHeight;
-	camera.updateProjectionMatrix();
-	renderer.setSize(innerWidth, innerHeight);
-}, false);
+window.addEventListener(
+	"resize",
+	(): void => {
+		camera.aspect = innerWidth / innerHeight;
+		camera.updateProjectionMatrix();
+		renderer.setSize(innerWidth, innerHeight);
+	},
+	false,
+);
 
-export const orbit: OrbitCameraControl = new OrbitCameraControl(camera, 8, 1.1, renderer.domElement);
+export const orbit: OrbitCameraControl = new OrbitCameraControl(
+	camera,
+	8,
+	1.1,
+	renderer.domElement,
+);
 
 const gridHelper1 = new GridHelper(3, 3, 0x444444, 0x444444);
 gridHelper1.position.y -= 0.5;

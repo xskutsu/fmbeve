@@ -1,25 +1,36 @@
 {
-	"name": "fmbeve",
-	"private": false,
-	"version": "1.0.0",
-	"description": "A visual real-time editor for the FMBE technique.",
-	"type": "commonjs",
-	"packageManager": "pnpm@9.0.0",
-	"scripts": {
-		"build": "node scripts/esbuild.cjs",
-		"check": "tsc -p src/tsconfig.json --noEmit",
-		"clean": "node scripts/clean.cjs",
-		"serve": "node scripts/serve.cjs",
-		"watch": "node scripts/esbuild.cjs --watch"
-	},
-	"license": "AGPL-3.0-or-later",
-	"dependencies": {
+	"author": "xskutsu <xskt@protonmail.com>",
+	"description": "A visual real-time editor for the FMBE technique",
+	"devDependencies": {
+		"@biomejs/biome": "^2.3.10",
+		"@types/express": "^5.0.6",
+		"@types/node": "^25.0.3",
+		"@types/three": "^0.182.0",
 		"esbuild": "^0.27.2",
 		"express": "^5.2.1",
 		"three": "^0.182.0",
 		"typescript": "^5.9.3"
 	},
-	"devDependencies": {
-		"@types/three": "^0.182.0"
-	}
+	"engines": {
+		"node": ">=20.0.0"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/xskutsu/fmbe-editor.git"
+	},
+	"license": "AGPL-3.0-or-later",
+	"name": "fmbe-editor",
+	"packageManager": "pnpm@10.8.0",
+	"private": false,
+	"scripts": {
+		"build": "node scripts/esbuild.mjs",
+		"check": "tsc -p src/tsconfig.json --noEmit",
+		"clean": "node scripts/clean.mjs",
+		"lint": "biome check .",
+		"lint:fix": "biome check --write .",
+		"serve": "node scripts/serve.mjs",
+		"watch": "node scripts/esbuild.mjs --watch"
+	},
+	"type": "module",
+	"version": "0.0.0"
 }

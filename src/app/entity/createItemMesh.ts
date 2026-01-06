@@ -1,17 +1,32 @@
-import { BufferGeometry, Color, DoubleSide, Float32BufferAttribute, Mesh, MeshBasicMaterial } from "three";
+import {
+	BufferGeometry,
+	Color,
+	DoubleSide,
+	Float32BufferAttribute,
+	Mesh,
+	MeshBasicMaterial
+} from "three";
 import { FACE } from "../constants";
 import { loadImage } from "../util/loadImage";
 import { applyMinecraftShader } from "../viewport/applyMinecraftShading";
 
 const cachedColor = new Color();
-export async function createItemMesh(imageURL: string, pixelSize: number = 1 / 16, depth: number = 1 / 16, alphaThreshold: number = 10): Promise<Mesh> {
+export async function createItemMesh(
+	imageURL: string,
+	pixelSize: number = 1 / 16,
+	depth: number = 1 / 16,
+	alphaThreshold: number = 10
+): Promise<Mesh> {
 	const imageElement: HTMLImageElement = await loadImage(imageURL);
 	const canvasElement = document.createElement("canvas");
 	const width: number = imageElement.width;
 	const height: number = imageElement.height;
 	canvasElement.width = width;
 	canvasElement.height = height;
-	const ctx = canvasElement.getContext("2d")!;
+	const ctx = canvasElement.getContext("2d");
+	if (ctx === null) {
+		throw new Error("CanvasRenderingContext2D is not supported.");
+	}
 	ctx.drawImage(imageElement, 0, 0);
 	const data: ImageDataArray = ctx.getImageData(0, 0, width, height).data;
 	const positions: number[] = [];
@@ -35,9 +50,20 @@ export async function createItemMesh(imageURL: string, pixelSize: number = 1 / 1
 		cachedColor.convertSRGBToLinear();
 		return [cachedColor.r, cachedColor.g, cachedColor.b];
 	};
-	const addFace = (x: number, y: number, z: number, corners: number[][], normal: number[], color: [number, number, number]) => {
+	const addFace = (
+		x: number,
+		y: number,
+		z: number,
+		corners: number[][],
+		normal: number[],
+		color: [number, number, number]
+	) => {
 		for (const corner of corners) {
-			positions.push((x + corner[0]) * pixelSize, (y + corner[1]) * pixelSize, (z + corner[2]) * depth);
+			positions.push(
+				(x + corner[0]) * pixelSize,
+				(y + corner[1]) * pixelSize,
+				(z + corner[2]) * depth
+			);
 			normals.push(normal[0], normal[1], normal[2]);
 			colors.push(color[0], color[1], color[2]);
 		}
@@ -75,13 +101,11 @@ export async function createItemMesh(imageURL: string, pixelSize: number = 1 / 1
 	geometry.setAttribute("normal", new Float32BufferAttribute(normals, 3));
 	geometry.setAttribute("color", new Float32BufferAttribute(colors, 3));
 	geometry.setIndex(indices);
-	geometry.translate(
-		-((width / 2) - 0.5) * pixelSize,
-		-((height / 2) - 0.5) * pixelSize,
-		0
-	);
-	return new Mesh(geometry, applyMinecraftShader(new MeshBasicMaterial({
+	geometry.translate(-(width / 2 - 0.5) * pixelSize, -(height / 2 - 0.5) * pixelSize, 0);
+	const material = new MeshBasicMaterial({
 		vertexColors: true,
 		side: DoubleSide
-	})));
+	});
+	applyMinecraftShader(material);
+	return new Mesh(geometry, material);
 }

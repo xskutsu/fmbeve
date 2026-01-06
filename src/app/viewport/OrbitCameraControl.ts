@@ -1,4 +1,4 @@
-import { Camera, Vector2, Vector3 } from "three";
+import { type Camera, Vector2, Vector3 } from "three";
 
 export default class OrbitCameraControl {
 	public readonly camera: Camera;
@@ -11,30 +11,48 @@ export default class OrbitCameraControl {
 	public isDragging: boolean;
 	public readonly mouse: Vector2;
 
-	public constructor(camera: Camera, moveSpeed: number, zoomSpeed: number, domElement: HTMLElement, startingPosition?: Vector3, interpolationSpeed: number = 0.15) {
+	public constructor(
+		camera: Camera,
+		moveSpeed: number,
+		zoomSpeed: number,
+		domElement: HTMLElement,
+		startingPosition?: Vector3,
+		interpolationSpeed: number = 0.15
+	) {
 		this.camera = camera;
 		this.moveSpeed = moveSpeed;
 		this.zoomSpeed = zoomSpeed;
 		this.domElement = domElement;
-		this.position = startingPosition === undefined ? new Vector3(10, Math.PI / 4, Math.PI / 3) : startingPosition.clone();
+		this.position =
+			startingPosition === undefined
+				? new Vector3(10, Math.PI / 4, Math.PI / 3)
+				: startingPosition.clone();
 		this.renderPosition = this.position.clone();
 		this.interpolationSpeed = interpolationSpeed;
 		this.isDragging = false;
 		this.mouse = new Vector2();
-		domElement.addEventListener("mousedown", e => this._mouseDownEvent(e.clientX, e.clientY));
+		domElement.addEventListener("mousedown", (e) =>
+			this._mouseDownEvent(e.clientX, e.clientY)
+		);
 		window.addEventListener("mouseup", () => this._mouseUpEvent());
-		domElement.addEventListener("mousemove", e => this._mouseMoveEvent(e.clientX, e.clientY));
-		domElement.addEventListener("wheel", e => this._wheelEvent(e.deltaY));
-		domElement.addEventListener("contextmenu", e => e.preventDefault());
+		domElement.addEventListener("mousemove", (e) =>
+			this._mouseMoveEvent(e.clientX, e.clientY)
+		);
+		domElement.addEventListener("wheel", (e) => this._wheelEvent(e.deltaY));
+		domElement.addEventListener("contextmenu", (e) => e.preventDefault());
 		this.update();
 	}
 
 	public update(): void {
 		this.renderPosition.lerp(this.position, this.interpolationSpeed);
 		this.camera.position.set(
-			this.renderPosition.x * Math.sin(this.renderPosition.z) * Math.sin(this.renderPosition.y),
+			this.renderPosition.x *
+				Math.sin(this.renderPosition.z) *
+				Math.sin(this.renderPosition.y),
 			this.renderPosition.x * Math.cos(this.renderPosition.z),
-			this.renderPosition.x * Math.sin(this.renderPosition.z) * Math.cos(this.renderPosition.y)
+			this.renderPosition.x *
+				Math.sin(this.renderPosition.z) *
+				Math.cos(this.renderPosition.y)
 		);
 		this.camera.lookAt(0, 0, 0);
 	}
@@ -56,7 +74,7 @@ export default class OrbitCameraControl {
 		const deltaY: number = clientY - this.mouse.y;
 		this.mouse.set(clientX, clientY);
 		this.position.y -= (deltaX / this.domElement.clientWidth) * this.moveSpeed;
-		this.position.z -= (deltaY / this.domElement.clientHeight) * this.moveSpeed
+		this.position.z -= (deltaY / this.domElement.clientHeight) * this.moveSpeed;
 		this.position.z = Math.max(0.01, Math.min(Math.PI - 0.01, this.position.z));
 	}
 

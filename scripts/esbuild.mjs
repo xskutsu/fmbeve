@@ -1,30 +1,26 @@
-const esbuild = require("esbuild");
-const { spawn } = require("node:child_process");
+import * as esbuild from "esbuild";
+
 const isWatch = process.argv.includes("--watch");
-const isRun = process.argv.includes("--run");
 const banner = `
 // 2026 (C) AGPL-3.0-or-later
 // https://github.com/xskutsu/fmbeve
 `.trim();
 
-(async function () {
+(async () => {
 	console.log("Starting building...");
 	const context = await esbuild.context({
-		bundle: true,
-		target: "es2024",
-		sourcemap: false,
-		sourcesContent: false,
 		banner: {
 			js: banner
 		},
-		entryPoints: [
-			"./src/index.ts",
-			"./src/sw.ts"
-		],
+		bundle: true,
+		entryPoints: ["./src/app/index.ts", "./src/sw/index.ts"],
 		format: "iife",
-		outdir: "public/js/",
-		platform: "browser",
 		minify: true,
+		outdir: "dist/",
+		platform: "browser",
+		sourcemap: false,
+		sourcesContent: false,
+		target: "es2020",
 		tsconfig: "./tsconfig.json"
 	});
 	console.log("Esbuild contexts established.");
