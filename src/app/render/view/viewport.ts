@@ -1,14 +1,13 @@
 import { PerspectiveCamera, type Scene, SRGBColorSpace, WebGLRenderer } from "three";
 
 export class Viewport {
-	public scene: Scene;
 	public container: HTMLElement;
 	public renderer: WebGLRenderer;
 	public camera: PerspectiveCamera;
 	public observer: ResizeObserver;
+	public onresize: (() => void) | null;
 
-	public constructor(scene: Scene, container: HTMLElement) {
-		this.scene = scene;
+	public constructor(container: HTMLElement) {
 		this.container = container;
 		this.renderer = new WebGLRenderer({
 			antialias: true
@@ -22,6 +21,7 @@ export class Viewport {
 		this.camera = new PerspectiveCamera(60, 1, 0.1, 200);
 		this.observer = new ResizeObserver(this._containerResizeEvent.bind(this));
 		this.observer.observe(this.container);
+		this.onresize = null;
 		const rect: DOMRect = this.container.getBoundingClientRect();
 		this._updateDimensions(rect.width, rect.height, Math.min(devicePixelRatio, 2));
 	}
@@ -35,8 +35,8 @@ export class Viewport {
 		}
 	}
 
-	public render(): void {
-		this.renderer.render(this.scene, this.camera);
+	public render(scene: Scene): void {
+		this.renderer.render(scene, this.camera);
 	}
 
 	private _containerResizeEvent(entries: ResizeObserverEntry[]): void {
@@ -51,6 +51,8 @@ export class Viewport {
 		this.renderer.setSize(width, height, false);
 		this.camera.aspect = width / height;
 		this.camera.updateProjectionMatrix();
-		this.render();
+		if (this.onresize !== null) {
+			this.onresize();
+		}
 	}
 }
