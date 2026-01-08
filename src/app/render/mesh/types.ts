@@ -1,6 +1,6 @@
 import type { Texture } from "three";
 
-export interface EntityTexture {
+export interface BlockTexture {
 	up: Texture;
 	down: Texture;
 	north: Texture;

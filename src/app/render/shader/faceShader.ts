@@ -14,9 +14,9 @@ vec3 N = normalize(vMcWorldNormal);
 float nx2 = N.x * N.x;
 float ny2 = N.y * N.y;
 float nz2 = N.z * N.z;
-float yBrightness = (N.y > 0.0) ? 0.988 : 0.5;
-float mcLightLevel = (nx2 * 0.62) + (nz2 * 0.82) + (ny2 * yBrightness);
-gl_FragColor.rgb *= mcLightLevel;`;
+float brightness = (N.y > 0.0) ? 0.988 : 0.5;
+float lightLevel = (nx2 * 0.62) + (nz2 * 0.82) + (ny2 * brightness);
+gl_FragColor.rgb *= lightLevel;`;
 
 type BeforeCompileCallback = (
 	shader: WebGLProgramParametersWithUniforms,
@@ -25,7 +25,7 @@ type BeforeCompileCallback = (
 
 const beforeCompileMap: WeakMap<Material, BeforeCompileCallback> = new WeakMap();
 
-export function applyMinecraftShader(material: Material): void {
+export function applyFaceShader(material: Material): void {
 	if (material.onBeforeCompile) {
 		beforeCompileMap.set(material, material.onBeforeCompile);
 	}

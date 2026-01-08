@@ -1,5 +1,13 @@
 import { MathArgCounts, MathImpl } from "./math";
 
+import {
+	MolangError,
+	type MolangExecution,
+	type MolangMathFunc,
+	MolangTokenType,
+	type MolangVariableMap
+} from "./types";
+
 const CHAR_0: number = 48;
 const CHAR_9: number = 57;
 const CHAR_A: number = 65;
@@ -24,14 +32,6 @@ const CHAR_LT: number = 60;
 const CHAR_GT: number = 62;
 const CHAR_AMPERSAND: number = 38;
 const CHAR_PIPE: number = 124;
-
-import {
-	MolangError,
-	type MolangExecution,
-	type MolangMathFunc,
-	MolangTokenType,
-	type MolangVariableMap
-} from "./types";
 
 class MolangParserError extends Error {
 	constructor(
@@ -90,15 +90,15 @@ export function executeMolang(
 					if (hasDot) {
 						break;
 					}
-
 					hasDot = true;
 					cursor++;
 				} else if (c === 69 || c === 101) {
 					cursor++;
 					if (cursor < length) {
 						const nextc: number = script.charCodeAt(cursor);
-						if (nextc === CHAR_PLUS || nextc === CHAR_MINUS)
+						if (nextc === CHAR_PLUS || nextc === CHAR_MINUS) {
 							cursor++;
+						}
 					}
 				} else {
 					break;

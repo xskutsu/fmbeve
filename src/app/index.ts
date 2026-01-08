@@ -1,57 +1,20 @@
-import { TextureLoader } from "three";
-import { createBlockMesh } from "./entity/createCubeMesh";
-import { Entity } from "./entity/entities";
-import { getCommand } from "./fmbe/getCommand";
-import { animateFrame } from "./viewport/viewport";
+import { OrbitCameraControl } from "./input/orbitCameraControl";
+import { Editor } from "./live/editor";
+import { Viewport } from "./render/view/viewport";
 
+const editor: Editor = new Editor();
+
+const viewport: Viewport = new Viewport(innerWidth, innerHeight, Math.min(devicePixelRatio, 2));
+
+const cameraControl = new OrbitCameraControl(viewport.camera);
+cameraControl.addListeners(viewport.renderer.domElement);
+
+function animateFrame(): void {
+	cameraControl.update();
+	editor.update(null);
+	viewport.render(editor.scene);
+	requestAnimationFrame(animateFrame);
+}
+
+document.body.appendChild(viewport.renderer.domElement);
 animateFrame();
-
-const o = new Entity(
-	createBlockMesh({
-		down: new TextureLoader().load(
-			"assets/texture/block/debug_down.png",
-		),
-		east: new TextureLoader().load(
-			"assets/texture/block/debug_east.png",
-		),
-		north: new TextureLoader().load(
-			"assets/texture/block/debug_north.png",
-		),
-		south: new TextureLoader().load(
-			"assets/texture/block/debug_south.png",
-		),
-		up: new TextureLoader().load(
-			"assets/texture/block/debug_up.png",
-		),
-		west: new TextureLoader().load(
-			"assets/texture/block/debug_west.png",
-		),
-	}),
-	{
-		basePosition: {
-			x: null,
-			y: null,
-			z: null,
-		},
-		extend: {
-			rotation: {
-				x: null,
-				y: null,
-			},
-			scale: null,
-		},
-		position: {
-			x: null,
-			y: 0,
-			z: null,
-		},
-		rotation: {
-			x: null,
-			y: null,
-			z: null,
-		},
-		scale: null,
-	},
-);
-
-console.log(getCommand(o.fmbe, "@e[type=fox]"));

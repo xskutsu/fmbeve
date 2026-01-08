@@ -19,7 +19,8 @@
 		"indentStyle": "tab",
 		"indentWidth": 8,
 		"lineEnding": "lf",
-		"lineWidth": 100
+		"lineWidth": 100,
+		"expand": "auto"
 	},
 	"javascript": {
 		"formatter": {
@@ -36,7 +37,16 @@
 	"linter": {
 		"enabled": true,
 		"rules": {
-			"recommended": true
+			"recommended": true,
+			"style": {
+				"useBlockStatements": "error"
+			},
+			"performance": {
+				"recommended": true
+			},
+			"security": {
+				"recommended": true
+			}
 		}
 	},
 	"vcs": {

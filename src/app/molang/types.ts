@@ -1,3 +1,9 @@
+export type MolangExecution = MolangExecutionSuccess | MolangExecutionFail;
+
+export type MolangVariableMap = Map<string, () => number>;
+
+export type MolangMathFunc = (...args: number[]) => number;
+
 export enum MolangError {
 	SyntaxError = "SYNTAX_ERROR",
 	UnknownFunction = "UNKNOWN_FUNCTION",
@@ -5,6 +11,33 @@ export enum MolangError {
 	InvalidParameters = "INVALID_PARAMETERS",
 	UnexpectedEOF = "UNEXPECTED_EOF",
 	MismatchedParentheses = "MISMATCHED_PARENTHESES"
+}
+
+export enum MolangTokenType {
+	Unknown,
+	EOF,
+	Number,
+	Identifier,
+	OpenParen,
+	CloseParen,
+	Comma,
+	Plus,
+	Minus,
+	Multiply,
+	Divide,
+	Modulo,
+	Not,
+	Question,
+	Colon,
+	Equal,
+	NotEqual,
+	Greater,
+	GreaterOrEqual,
+	Less,
+	LessOrEqual,
+	And,
+	Or,
+	NullCoalesce
 }
 
 export interface MolangExecutionSuccess {
@@ -17,37 +50,4 @@ export interface MolangExecutionFail {
 	error: MolangError;
 	errorMessage: string;
 	errorCharacterIndex: number;
-}
-
-export type MolangExecution = MolangExecutionSuccess | MolangExecutionFail;
-
-export type MolangVariableMap = Map<string, () => number>;
-
-export type MolangMathFunc = (...args: number[]) => number;
-
-export enum MolangTokenType {
-	Unknown = 0,
-	EOF = 1,
-	Number = 2,
-	Identifier = 3,
-	OpenParen = 4,
-	CloseParen = 5,
-	Comma = 6,
-	Plus = 7,
-	Minus = 8,
-	Multiply = 9,
-	Divide = 10,
-	Modulo = 11,
-	Not = 12,
-	Question = 13,
-	Colon = 14,
-	Equal = 15,
-	NotEqual = 16,
-	Greater = 17,
-	GreaterOrEqual = 18,
-	Less = 19,
-	LessOrEqual = 20,
-	And = 21,
-	Or = 22,
-	NullCoalesce = 23
 }

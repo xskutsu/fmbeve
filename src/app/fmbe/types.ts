@@ -1,5 +1,11 @@
 export type FMBEValue = number | string | null;
 
+export enum FMBEType {
+	block3D,
+	block2D,
+	item
+}
+
 export interface FMBEVector3 {
 	x: FMBEValue;
 	y: FMBEValue;
@@ -16,10 +22,15 @@ export interface FMBEExtend {
 	rotation: FMBEVector2;
 }
 
-export interface FMBE {
+export interface FMBEData {
+	scale: FMBEValue;
 	position: FMBEVector3;
 	basePosition: FMBEVector3;
 	rotation: FMBEVector3;
-	scale: FMBEValue;
 	extend: FMBEExtend;
+}
+
+export interface FMBE {
+	data: FMBEData;
+	type: FMBEType;
 }
