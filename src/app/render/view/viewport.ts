@@ -11,7 +11,7 @@ export class Viewport {
 	public constructor(container: HTMLElement) {
 		this.container = container;
 		this.renderer = new WebGLRenderer({
-			antialias: true
+			antialias: false
 		});
 		this.renderer.shadowMap.enabled = true;
 		this.renderer.outputColorSpace = SRGBColorSpace;
