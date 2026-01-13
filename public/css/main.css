@@ -1,9 +1,30 @@
 body {
 	width: 100vw;
 	height: 100vh;
-	min-height: 100%;
 	padding: 0;
 	margin: 0;
 	outline: none;
-	background-color: #555555;
+	background-color: #000000;
+}
+
+.editor-container {
+	display: grid;
+	grid-template-areas: "top top top" "left middle right";
+	grid-template-rows: 60px 1fr;
+	grid-template-columns: 250px 1fr 250px;
+	width: 100%;
+	height: 100%;
+	background-color: #202020;
+}
+
+.top-container {
+}
+
+.left-container {
+}
+
+.middle-container {
+}
+
+.right-container {
 }

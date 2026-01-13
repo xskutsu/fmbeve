@@ -10,7 +10,12 @@ import { Viewport } from "./render/view/viewport";
 
 const editor: Editor = new Editor();
 
-const viewport: Viewport = new Viewport(document.body);
+const middleContainerElement = document.getElementById("middle-container");
+if (middleContainerElement === null) {
+	throw new Error("Failed to get middle container element for viewport.");
+}
+
+const viewport: Viewport = new Viewport(middleContainerElement);
 viewport.onresize = () => viewport.render(editor.scene);
 
 const cameraControl: OrbitCameraControl = new OrbitCameraControl(
